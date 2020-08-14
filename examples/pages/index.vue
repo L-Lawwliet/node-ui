@@ -36,22 +36,22 @@
   </div>
 </template>
 <script>
-import Http from '../../src/utils/http';
+import Http from "../../src/utils/http";
 
 const http = new Http();
 export default {
   data() {
     return {
       loading: false,
-      keyword: '',
+      keyword: "",
       tableData: [],
       dialogVisible: false,
       isEdit: false,
       form: {
-        userName: '',
-        age: '',
+        userName: "",
+        age: ""
       },
-      id: '',
+      id: ""
     };
   },
   created() {
@@ -60,13 +60,15 @@ export default {
   methods: {
     query() {
       this.loading = true;
-      http.get('/select').then((res) => {
+      http.post("/select", { keyword: this.keyword }).then(res => {
         this.loading = false;
         if (res.data.status === 200) {
           this.tableData = res.data.data;
         } else {
           this.tableData = [];
         }
+      }).catch(err => {
+        this.loading = false;
       });
     },
     search() {},
@@ -74,8 +76,8 @@ export default {
       this.isEdit = false;
       this.dialogVisible = true;
       this.form = {
-        userName: '',
-        age: '',
+        userName: "",
+        age: ""
       };
     },
     edit(e) {
@@ -83,7 +85,7 @@ export default {
       this.dialogVisible = true;
       this.form = {
         userName: e.userName,
-        age: e.age,
+        age: e.age
       };
       this.id = e.id;
     },
@@ -94,18 +96,18 @@ export default {
           userName: this.form.userName,
           age: this.form.age
         };
-        http.post('/update', params).then((res) => {
+        http.post("/update", params).then(res => {
           if (res.data.status === 200) {
             this.dialogVisible = false;
-            this.$message.success('修改成功');
+            this.$message.success("修改成功");
             this.query();
           }
         });
       } else {
-        http.post('/add', this.form).then((res) => {
+        http.post("/add", this.form).then(res => {
           if (res.data.status === 200) {
             this.dialogVisible = false;
-            this.$message.success('添加成功');
+            this.$message.success("添加成功");
             this.query();
           }
         });
@@ -115,16 +117,15 @@ export default {
       const params = {
         id
       };
-      http.post('/delete', params).then((res) => {
+      http.post("/delete", params).then(res => {
         if (res.data.status === 200) {
-          this.$message.success('删除成功');
+          this.$message.success("删除成功");
           this.query();
         }
       });
-    },
+    }
   }
 };
 </script>
 <style lang="less">
-  
 </style>
