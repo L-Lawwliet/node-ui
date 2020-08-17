@@ -5,9 +5,9 @@
 </template>
 <script>
 export default {
-  name: 'App'
+  name: 'App',
 };
 </script>
-<style>
-  
+<style lang="less">
+@import url('../../src/assets/css/public.less');
 </style>
