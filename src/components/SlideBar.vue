@@ -1,8 +1,8 @@
 <template>
-  <div id="sidebar-wrap" :class="{ collapsed: toggSliderBar }">
-    <img class="logo" src="https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/b09f82ee76e4118c2a1d244b0f492b08_121_121.jpg" />
+  <div id="sidebar-wrap">
+    <img class="logo" src="../assets/img/headicon.jpg" />
     <div class="userName">{{userName}}</div>
-    <el-menu background-color="#324157" text-color="#ddd" :default-active="$route.path" :unique-opened="isUnique" :router="isRouter" mode="vertical" :collapse="toggSliderBar">
+    <el-menu background-color="#324157" text-color="#ddd" :default-active="$route.path" :unique-opened="isUnique" :router="isRouter" mode="vertical">
       <template v-for="item in menu">
         <el-submenu v-if="item.children.length !== 0" :index="item.router" :key="item.router">
           <template slot="title">
@@ -12,11 +12,9 @@
             <span slot="title">{{child.name}}</span>
           </el-menu-item>
         </el-submenu>
-
         <el-menu-item v-else :index="item.router" :key="item.router">
           <span slot="title">{{item.name}}</span>
         </el-menu-item>
-
       </template>
     </el-menu>
   </div>
@@ -147,11 +145,6 @@ export default {
       ]
     };
   },
-  computed: {
-    toggSliderBar() {
-      return this.$store.state.common.isCollapse;
-    }
-  },
   mounted() {
     //  this.getUserMenu()
   },
@@ -211,10 +204,10 @@ export default {
 }
 
 // 动态改变左侧导航包裹层宽度
-#sidebar-wrap.collapsed {
-  width: 64px;
-  transition: all 0.3s;
-}
+// #sidebar-wrap.collapsed {
+//   width: 64px;
+//   transition: all 0.3s;
+// }
 
 // 美化左侧导航的留白
 .el-submenu .el-menu-item {

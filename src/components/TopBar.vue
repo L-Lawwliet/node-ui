@@ -1,18 +1,14 @@
 <template>
-  <div id="topbar-wrap" :class="{ topCollapsed: isCollapse }">
+  <div id="topbar-wrap">
     <el-row type="flex" justify="space-between">
       <el-col :span="10">
-        <a class="head-title" @click="linkTo('index')">快乐商家操作台</a>
+        <a class="head-title" @click="linkTo('index')">天才少年的Animation</a>
       </el-col>
       <el-col :span="14">
         <el-row type="flex" class="row-right" justify="end">
-
-          <a class="animated fadeIn">你好，{{userName}}</a>
-
+          <a class="animated fadeIn"></a>
           <a @click="editPwd" style="cursor: pointer;">修改密码</a>
-
           <a class="logout" @click.prevent="logout">退出</a>
-
         </el-row>
       </el-col>
     </el-row>
@@ -24,13 +20,7 @@ export default {
   name: "topbar",
   data() {
     return {
-      userName: localStorage.userName || ""
     };
-  },
-  computed: {
-    isCollapse() {
-      return this.$store.state.common.isCollapse;
-    }
   },
   methods: {
     editPwd() {

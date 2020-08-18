@@ -36,20 +36,20 @@
     </div>
     <!-- 添加/修改 -->
     <el-dialog :visible.sync="dialogVisible" :close-on-click-modal="false" :title="isEdit?'修改':'添加'" width="500px">
-      <el-form ref="form" :model="form" label-width="100px" size="mini">
-        <el-form-item label="名称">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px" size="mini">
+        <el-form-item label="名称" prop="name">
           <el-input v-model="form.name" clearable></el-input>
         </el-form-item>
-        <el-form-item label="简介">
+        <el-form-item label="简介" prop="synopsis">
           <el-input type="textarea" v-model="form.synopsis" clearable rows="5"></el-input>
         </el-form-item>
-        <el-form-item label="上映日期">
+        <el-form-item label="上映日期" prop="createDate">
           <el-date-picker v-model="form.createDate" value-format="yyyy-MM-dd" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
-        <el-form-item label="是否完结">
+        <el-form-item label="是否完结" prop="isEnd">
           <el-checkbox v-model="form.isEnd" :true-label="1" :false-label="0"></el-checkbox>
         </el-form-item>
-        <el-form-item label="封面图地址">
+        <el-form-item label="封面图地址" prop="coverImg">
           <el-input v-model="form.coverImg" clearable></el-input>
         </el-form-item>
         <el-form-item label=" " v-if="form.coverImg">
@@ -57,8 +57,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogVisible = false">取 消</el-button>
-        <el-button size="mini" type="primary" @click="confirm">确 定</el-button>
+        <el-button size="small" @click="dialogVisible = false">取 消</el-button>
+        <el-button size="small" type="primary" @click="confirm">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -81,6 +81,12 @@ export default {
         isEnd: 0,
         coverImg: '',
       },
+      rules: {
+        name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+        synopsis: [{ required: true, message: '请输入简介', trigger: 'blur' }],
+        createDate: [{ required: true, message: '请选择上映日期', trigger: 'blur' }],
+        coverImg: [{ required: true, message: '请输入封面图片', trigger: 'blur' }],
+      },
       id: '',
     };
   },
@@ -91,9 +97,11 @@ export default {
     query() {
       this.loading = true;
       const params = {
-        keyword: this.keyword
+        keyword: this.keyword,
       };
-      api.select(params).then((res) => {
+      api
+        .select(params)
+        .then((res) => {
           this.loading = false;
           if (res.data.status === 200) {
             this.tableData = res.data.data;
@@ -130,37 +138,38 @@ export default {
       this.id = e.id;
     },
     confirm() {
-      if (this.isEdit) {
-        const params = {
-          id: this.id,
-          name: this.form.name,
-          synopsis: this.form.synopsis,
-          createDate: this.form.createDate,
-          isEnd: this.form.isEnd,
-          coverImg: this.form.coverImg,
-        };
-        api.update(params).then((res) => {
-          if (res.data.status === 200) {
-            this.dialogVisible = false;
-            this.$message.success('修改成功');
-            this.query();
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          if (this.isEdit) {
+            const params = {
+              id: this.id,
+              name: this.form.name,
+              synopsis: this.form.synopsis,
+              createDate: this.form.createDate,
+              isEnd: this.form.isEnd,
+              coverImg: this.form.coverImg,
+            };
+            api.update(params).then((res) => {
+              if (res.data.status === 200) {
+                this.dialogVisible = false;
+                this.$message.success('修改成功');
+                this.query();
+              }
+            });
+          } else {
+            api.add(this.form).then((res) => {
+              if (res.data.status === 200) {
+                this.dialogVisible = false;
+                this.$message.success('添加成功');
+                this.query();
+              }
+            });
           }
-        });
-      } else {
-        api.add(this.form).then((res) => {
-          if (res.data.status === 200) {
-            this.dialogVisible = false;
-            this.$message.success('添加成功');
-            this.query();
-          }
-        });
-      }
+        }
+      });
     },
     del(id) {
-      const params = {
-        id,
-      };
-      api.delete(params).then((res) => {
+      api.delete({id}).then((res) => {
         if (res.data.status === 200) {
           this.$message.success('删除成功');
           this.query();
